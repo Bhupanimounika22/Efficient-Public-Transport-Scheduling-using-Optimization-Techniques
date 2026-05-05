@@ -1,6 +1,6 @@
 import requests
 
-HOLIDAY_API_KEY = "Qxiv5ktVDdDz2P0emoAwKNhCw8sd56ag"
+HOLIDAY_API_KEY = "ENTER YOUR API KEY"
 holiday_cache = {}
 
 def get_calendar_data(date):
