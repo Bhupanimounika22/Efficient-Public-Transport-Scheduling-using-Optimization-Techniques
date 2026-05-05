@@ -65,7 +65,7 @@ automl_app/
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/your-username/Efficient-Public-Transport-Scheduling-using-Optimization-Techniques.git
+git clone https://github.com/Bhupanimounika22/Efficient-Public-Transport-Scheduling-using-Optimization-Techniques.git
 cd Efficient-Public-Transport-Scheduling-using-Optimization-Techniques
 ```
 
