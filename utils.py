@@ -1,6 +1,6 @@
 import requests
 
-WEATHER_API_KEY = "43d3404b021e926700de2eccf59707e6"
+WEATHER_API_KEY = "ENTER YOUR API KEY"
 weather_cache = {}
 
 def get_weather(city="Vijayawada"):
