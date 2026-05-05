@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assignments</title>
+
+<style>
+
+/* ===== THEME COLORS ===== */
+:root {
+    --primary: #6366f1;
+    --secondary: #8b5cf6;
+    --accent: #ec4899;
+    --white: #ffffff;
+}
+
+/* ===== BODY ===== */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a);
+    color: white;
+    margin: 0;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(15,23,42,0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(99,102,241,0.2);
+}
+
+.logo {
+    font-size: 1.6rem;
+    font-weight: bold;
+    background: linear-gradient(135deg,var(--primary),var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    position: relative;
+}
+
+nav a::after {
+    content:'';
+    position:absolute;
+    bottom:-5px;
+    left:0;
+    width:0%;
+    height:2px;
+    background:linear-gradient(90deg,var(--primary),var(--accent));
+    transition:0.3s;
+}
+
+nav a:hover::after {
+    width:100%;
+}
+
+/* ===== CONTAINER ===== */
+.container {
+    padding:100px 30px;
+}
+
+/* ===== FORM ===== */
+form {
+    margin-bottom: 20px;
+}
+
+input[type="date"] {
+    padding:10px;
+    border-radius:8px;
+    border:none;
+}
+
+button {
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    background: linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    cursor:pointer;
+}
+
+/* ===== TABLE ===== */
+.table-container {
+    overflow-x:auto;
+}
+
+table {
+    width:100%;
+    border-collapse: collapse;
+    margin-top:20px;
+    min-width:700px;
+}
+
+th {
+    background: rgba(99,102,241,0.2);
+}
+
+th, td {
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+tr:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:768px){
+    nav ul {
+        gap:10px;
+        font-size:14px;
+    }
+
+    .container {
+        padding:100px 15px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+    <div class="logo">🚍 TransportAI</div>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/add_driver">Driver</a></li>
+        <li><a href="/add_conductor">Conductor</a></li>
+        <li><a href="/assignments">Assignments</a></li>
+    </ul>
+</nav>
+
+<!-- ===== CONTENT ===== -->
+<div class="container">
+
+<h2>Assignments</h2>
+
+<!-- RUN SCHEDULER -->
+<form method="post" action="/run_scheduler">
+    Date:
+    <input type="date" name="date" required>
+    <button type="submit">Run Scheduler</button>
+</form>
+
+<!-- TABLE -->
+<div class="table-container">
+<table>
+<tr>
+<th>Date</th>
+<th>Route</th>
+<th>Hour</th>
+<th>Bus</th>
+<th>Passengers</th>
+<th>Driver</th>
+<th>Conductor</th>
+</tr>
+
+{% for r in data %}
+<tr>
+<td>{{ r.date }}</td>
+<td>{{ r.route }}</td>
+<td>{{ r.hour }}</td>
+<td>{{ r.bus_no }}</td>
+<td>{{ r.passengers }}</td>
+<td>{{ r.driver_name or "Not Assigned" }}</td>
+<td>{{ r.conductor_name or "Not Assigned" }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+</div>
+
+</body>
+</html>

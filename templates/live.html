@@ -1,0 +1,34 @@
+<table border="1" cellpadding="10">
+    <tr>
+        <th rowspan="2">Route</th>
+        <th colspan="4">Morning</th>
+        <th colspan="4">Afternoon</th>
+        <th colspan="4">Evening</th>
+    </tr>
+    <tr>
+        <th>Passengers</th><th>Buses</th><th>Drivers</th><th>Conductors</th>
+        <th>Passengers</th><th>Buses</th><th>Drivers</th><th>Conductors</th>
+        <th>Passengers</th><th>Buses</th><th>Drivers</th><th>Conductors</th>
+    </tr>
+
+    {% for row in data %}
+    <tr>
+        <td>{{ row.route }}</td>
+
+        <td>{{ row.Morning_passengers }}</td>
+        <td>{{ row.Morning_buses }}</td>
+        <td>{{ row.Morning_drivers }}</td>
+        <td>{{ row.Morning_conductors }}</td>
+
+        <td>{{ row.Afternoon_passengers }}</td>
+        <td>{{ row.Afternoon_buses }}</td>
+        <td>{{ row.Afternoon_drivers }}</td>
+        <td>{{ row.Afternoon_conductors }}</td>
+
+        <td>{{ row.Evening_passengers }}</td>
+        <td>{{ row.Evening_buses }}</td>
+        <td>{{ row.Evening_drivers }}</td>
+        <td>{{ row.Evening_conductors }}</td>
+    </tr>
+    {% endfor %}
+</table>

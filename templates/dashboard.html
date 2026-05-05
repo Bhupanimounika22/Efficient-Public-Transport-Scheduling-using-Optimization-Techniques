@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Transport AI</title>
+
+<style>
+:root {
+    --primary: #6366f1;
+    --accent: #ec4899;
+    --dark: #0f172a;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#0f172a,#1e293b,#0f172a);
+    color: white;
+}
+
+/* NAVBAR */
+nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 30px;
+    background: rgba(15,23,42,0.95);
+    border-bottom: 1px solid rgba(99,102,241,0.3);
+}
+
+nav h2 {
+    background: linear-gradient(135deg,#6366f1,#ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+}
+
+/* SECTION */
+.section {
+    padding: 30px;
+}
+
+h2 {
+    background: linear-gradient(135deg,#60a5fa,#8b5cf6,#ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* TABLE */
+.table-box {
+    margin-top: 15px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: center;
+}
+
+th {
+    background: rgba(99,102,241,0.3);
+}
+
+tr:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+/* SEARCH */
+.search {
+    margin-top: 10px;
+    padding: 8px;
+    width: 250px;
+    border-radius: 8px;
+    border: none;
+}
+
+/* PAGINATION */
+.pagination {
+    margin-top: 10px;
+}
+
+button {
+    margin: 5px;
+    padding: 5px 10px;
+    background: linear-gradient(135deg,#6366f1,#ec4899);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <h2>🚍 Transport AI</h2>
+    <div>
+        <a href="/">Home</a>
+        <a href="/predict">Predict</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/about">About</a>
+    </div>
+</nav>
+<div style="padding:20px; text-align:center;">
+    <form method="GET" action="/dashboard">
+        <label>Select Date:</label>
+        <input type="date" name="date" value="{{ selected_date }}">
+        <button type="submit">View</button>
+    </form>
+</div>
+
+<!-- DAILY -->
+<div class="section">
+<h2>📊 Daily Summary</h2>
+
+<input class="search" placeholder="Search..." onkeyup="searchTable('dailyTable', this.value)">
+
+<div class="table-box">
+<table id="dailyTable">
+<thead>
+<tr>
+<th>Date</th><th>Demand</th><th>Served</th><th>Waiting</th><th>Buses</th>
+</tr>
+</thead>
+<tbody>
+{% for d in daily %}
+<tr>
+<td>{{ d.date }}</td>
+<td>{{ d.total_demand }}</td>
+<td>{{ d.total_served }}</td>
+<td>{{ d.total_waiting }}</td>
+<td>{{ d.total_buses }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="pagination" id="dailyPagination"></div>
+</div>
+
+<!-- TODAY -->
+<div class="section">
+<h2>🚍 Schedule for {{ selected_date }}</h2>
+
+<input class="search" placeholder="Search..." onkeyup="searchTable('todayTable', this.value)">
+
+<div class="table-box">
+<table id="todayTable">
+<thead>
+<tr>
+<th>Hour</th>
+<th>Route</th>
+<th>Predicted</th>
+<th>Actual</th>
+<th>Buses</th>
+<th>Served</th>
+<th>Waiting</th></tr>
+</thead>
+<tbody>
+{% for t in today %}
+<tr>
+<td>{{ t.hour }}</td>
+<td>{{ t.route }}</td>
+<td>{{ t.predicted_passengers }}</td>
+<td>{{ t.actual_passengers }}</td>
+<td>{{ t.buses_allocated }}</td>
+<td>{{ t.served_passengers }}</td>
+<td>{{ t.waiting_passengers }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="pagination" id="todayPagination"></div>
+</div>
+
+<!-- MOVEMENT -->
+<div class="section">
+<h2>👨‍✈️ Movement</h2>
+
+<input class="search" placeholder="Search..." onkeyup="searchTable('moveTable', this.value)">
+
+<div class="table-box">
+<table id="moveTable">
+<thead>
+<tr>
+<th>Hour</th><th>Status</th><th>Buses</th><th>Cost</th>
+</tr>
+</thead>
+<tbody>
+{% for m in movement %}
+<tr>
+<td>{{ m.hour }}</td>
+<td>{{ m.status }}</td>
+<td>{{ m.total_buses }}</td>
+<td>{{ m.cost }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="pagination" id="movePagination"></div>
+</div>
+
+<!-- JS -->
+<script>
+// 🔍 SEARCH
+function searchTable(tableId, value) {
+    let filter = value.toLowerCase();
+    let rows = document.querySelectorAll(`#${tableId} tbody tr`);
+
+    rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(filter) ? "" : "none";
+    });
+}
+
+// 📄 PAGINATION
+function paginate(tableId, paginationId, rowsPerPage = 20) {
+    let table = document.getElementById(tableId);
+    let rows = table.querySelectorAll("tbody tr");
+    let pagination = document.getElementById(paginationId);
+
+    let currentPage = 1;
+    let totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    function showPage(page) {
+        currentPage = page;
+
+        rows.forEach((row, index) => {
+            row.style.display =
+                index >= (page-1)*rowsPerPage && index < page*rowsPerPage
+                ? "" : "none";
+        });
+    }
+
+    function createButtons() {
+        pagination.innerHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+            let btn = document.createElement("button");
+            btn.innerText = i;
+            btn.onclick = () => showPage(i);
+            pagination.appendChild(btn);
+        }
+    }
+
+    createButtons();
+    showPage(1);
+}
+
+// INIT
+paginate("dailyTable","dailyPagination");
+paginate("todayTable","todayPagination");
+paginate("moveTable","movePagination");
+</script>
+
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predict</title>
+
+<style>
+:root {
+    --primary: #6366f1;
+    --accent: #ec4899;
+}
+
+/* BODY */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+}
+
+/* NAVBAR */
+nav {
+    background: rgba(15, 23, 42, 0.95);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+nav h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* NAV LINKS */
+nav ul {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+/* MOBILE NAV */
+.menu-toggle {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    nav ul {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        background: #0f172a;
+        flex-direction: column;
+        align-items: center;
+        display: none;
+        padding: 15px 0;
+    }
+
+    nav ul.active {
+        display: flex;
+    }
+}
+
+/* CONTAINER */
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* CARD */
+.card {
+    width: 100%;
+    max-width: 450px;
+    padding: 25px;
+    border-radius: 15px;
+    background: #1e293b;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* FORM */
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    font-size: 14px;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border: 1px solid var(--primary);
+}
+
+/* BUTTON */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+/* API BOX */
+.api-box {
+    background: #111827;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.api-box p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+/* SMALL SCREEN IMPROVEMENTS */
+@media (max-width: 480px) {
+    .card {
+        padding: 18px;
+    }
+
+    nav h2 {
+        font-size: 1.1rem;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <h2>🚍 Transport AI</h2>
+    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+    <ul id="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/predict">Predict</a></li>
+        <li><a href="/about">About</a></li>
+    </ul>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+<div class="card">
+
+<h2>🔮 Predict Passenger Demand</h2>
+
+<form method="POST">
+
+<label>Route</label>
+<select name="route">
+<option>PNBS–BenzCircle–Autonagar</option>
+<option>PNBS–Gunadala–Gannavaram</option>
+<option>PNBS–Poranki–Penamaluru</option>
+<option>PNBS–Kanuru–Vuyyuru</option>
+<option>PNBS–Bhavanipuram–Ibrahimpatnam</option>
+<option>BenzCircle–Ramavarappadu–Gannavaram</option>
+</select>
+
+<label>Date</label>
+<input type="date" name="date" id="dateField" required>
+
+<label>Hour</label>
+<input type="number" name="hour"   required>
+
+<div class="api-box">
+    <p>🌦 Weather: <b id="weather">--</b></p>
+    <p>📅 Holiday: <b id="holiday">--</b></p>
+    <p>🎉 Festival: <b id="festival">--</b></p>
+
+    <hr>
+
+    <p>📆 Day: <b id="day">--</b></p>
+    <p>📅 Month: <b id="month">--</b></p>
+    <p>🗓 Weekend: <b id="weekend">--</b></p>
+
+    <hr>
+
+    <p>🌡 Season: <b id="season">--</b></p>
+    <p>🚦 Traffic: <b id="traffic">--</b></p>
+
+    <hr>
+
+    <p>📚 Exam Season: <b id="exam_season">--</b></p>
+    <p>🎓 Exam End Rush: <b id="exam_end">--</b></p>
+</div>
+
+<button type="submit">🚀 Predict</button>
+
+</form>
+
+</div>
+</div>
+
+<script>
+// NAV
+function toggleMenu() {
+    document.getElementById("navLinks").classList.toggle("active");
+}
+
+// ELEMENTS
+const dateField = document.getElementById("dateField");
+const hourField = document.querySelector("input[name='hour']");
+
+// AUTO DATE
+dateField.value = new Date().toISOString().split('T')[0];
+
+// 🔥 CORE FUNCTION
+function fetchData() {
+
+    const date = dateField.value;
+    const hour = hourField.value || 9;
+
+    if (!date) return;
+
+    console.log("Fetching for:", date, hour);  // debug
+
+    fetch("/get_info", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ date: date, hour: hour })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        // UPDATE UI
+        document.getElementById("weather").innerText = data.weather;
+        document.getElementById("holiday").innerText = data.holiday;
+        document.getElementById("festival").innerText = data.festival;
+
+        document.getElementById("day").innerText = data.day;
+        document.getElementById("month").innerText = data.month;
+        document.getElementById("weekend").innerText = data.weekend;
+
+        document.getElementById("season").innerText = data.season;
+        document.getElementById("traffic").innerText = data.traffic;
+
+        document.getElementById("exam_season").innerText = data.exam_season;
+        document.getElementById("exam_end").innerText = data.exam_end;
+    })
+    .catch(err => console.log("Error:", err));
+}
+
+// 🔥 EVENTS (VERY IMPORTANT)
+dateField.addEventListener("change", fetchData);
+hourField.addEventListener("input", fetchData);
+
+// 🔥 ALSO TRIGGER WHEN PAGE LOADS
+window.onload = fetchData;
+</script>
+
+</body>
+</html>

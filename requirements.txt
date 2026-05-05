@@ -1,0 +1,31 @@
+# Core Web Framework
+Flask
+gunicorn
+
+# Data Processing
+pandas
+numpy
+
+# Machine Learning
+scikit-learn
+xgboost
+joblib 
+
+# Database (MySQL)
+mysql-connector-python 
+
+# API Requests (weather, calendar)
+requests
+
+# Environment Variables
+python-dotenv 
+
+# Email Handling
+# (No need for secure-smtplib, Python already has smtplib)
+
+# Date & Time utilities
+python-dateutil
+
+# Optional
+orjson
+matplotlib 
